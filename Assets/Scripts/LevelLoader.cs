@@ -5,13 +5,18 @@ using UnityEngine.SceneManagement;
 
 public class LevelLoader : MonoBehaviour
 {
-    
 
+    int currentSceneIndex;
+    [SerializeField] int waitInSecondsForLoad = 4;
 
     // Start is called before the first frame update
     void Start()
     {
-        loadStartScene();
+        currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        if (currentSceneIndex == 0)
+        {
+            StartCoroutine(WaitForScene());
+        }
     }
 
     // Update is called once per frame
@@ -20,14 +25,13 @@ public class LevelLoader : MonoBehaviour
         
     }
 
-    private void loadStartScene()
+    private IEnumerator WaitForScene()
     {
-        StartCoroutine(loadStartSceneWithDelay());
-    }
-
-    private IEnumerator loadStartSceneWithDelay()
+        yield return new WaitForSeconds(waitInSecondsForLoad);
+        loadNextScene();
+    } 
+    public void loadNextScene()
     {
-        yield return new WaitForSeconds(3);
-        SceneManager.LoadScene(1);
+        SceneManager.LoadScene(currentSceneIndex + 1);
     }
 }
